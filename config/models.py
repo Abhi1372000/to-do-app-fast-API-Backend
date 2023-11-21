@@ -1,4 +1,5 @@
 from pymongo import MongoClient
+from datetime import datetime
 
 # creating a client
 client = MongoClient('mongodb://localhost:27017/')
@@ -26,6 +27,17 @@ user_data = {
         ]
     }
 }
+
+
+async def add_task_to_db():
+    # Find the user by email (assuming email is unique)
+    user_email = "abhi@gmail.com"
+    existing_user = users_collection.find_one({"email": user_email})
+
+    # Add a new task with the current timestamp to the todo_list
+    new_task = ["pending", str(datetime.utcnow())]
+    existing_user["todo_list"]["Learn MongoDB"].append(new_task)
+    return  
 
 if __name__ == "__main__":
     # Insert data into the collection
