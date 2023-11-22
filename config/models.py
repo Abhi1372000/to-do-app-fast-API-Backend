@@ -29,17 +29,46 @@ user_data = {
 }
 
 
-async def add_task_to_db():
+async def add_task_to_user():
     # Find the user by email (assuming email is unique)
     user_email = "abhi@gmail.com"
-    existing_user = users_collection.find_one({"email": user_email})
 
-    # Add a new task with the current timestamp to the todo_list
-    new_task = ["pending", str(datetime.utcnow())]
-    existing_user["todo_list"]["Learn MongoDB"].append(new_task)
-    return  
+    new_task = {"Learn MongoDB": ["pending", str(datetime.utcnow())]}
+
+    # storing into variable
+    existing_user = await users_collection.find_one({"email": user_email})
+
+    # updating the dictionary
+    existing_user['todo_list'].update(new_task)
+
+    # updating it to the db
+    updated_result = await (
+        users_collection.update_one({"email": user_email}, {"$set": existing_user}))
+    print(updated_result)
+    return
+
+
+# def add_task_to_db():
+#     # Find the user by email (assuming email is unique)
+#     user_email = "abhi@gmail.com"
+#     existing_user = users_collection.find_one({"email": user_email})
+
+#     # Add a new task with the current timestamp to the todo_list
+#     # new_task = ["pending", str(datetime.utcnow())]
+#     new_task = [{"Learn MongoDB": ["pending", str(datetime.utcnow())]}]
+    
+#     if "todo_list" not in existing_user:
+#         existing_user["todo_list"] = {}
+
+#     existing_user["todo_list"].update(new_task)
+#     print("this is ex", existing_user)
+#     # existing_user["todo_list"]["Learn MongoDB"].append(new_task)
+#     users_collection.update_one({"email": user_email}, {"$set": existing_user})
+#     return "done"
+
 
 if __name__ == "__main__":
     # Insert data into the collection
-    users_collection.insert_one(user_data)
+    # users_collection.insert_one(user_data)
+    add_task_to_user()
     print("Done")
