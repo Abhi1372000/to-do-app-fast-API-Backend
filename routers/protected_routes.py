@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 from controller.adding_task import add_task_to_user
-from fastapi.responses import JSONResponse
-from error_responses import responses
+# from fastapi.responses import JSONResponse
+from responses import responses
 
 protected_router = APIRouter()
 
@@ -9,10 +9,14 @@ protected_router = APIRouter()
 @protected_router.post("/api/add_task")
 async def add_task():
     result = await add_task_to_user()
-    if result is False:
-        content_res = responses["400"]["message"] = "data is not updated"
-        return JSONResponse(status_code=400, content=content_res)
-    return {"message": "task added"}
+    if result is False or result is None:
+        content_res = responses["400"]
+        content_res["message"] = "data is not updated"
+        return content_res
+    content_res = responses["200"]
+    content_res["message"] = "data updated successfully"
+    content_res["data"] = {"todo_list": result["todo_list"]}
+    return {"response": content_res}
 
 
 @protected_router.get("/api/get_tasks")

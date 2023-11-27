@@ -8,16 +8,16 @@ async def add_task_to_user():
         user_email = "abhi@gmail.com"
 
         new_task = {"Learn MongoDB": ["pending", str(datetime.utcnow())]}
-
         # storing into variable
         existing_user = users_collection.find_one({"email": user_email})
-
+        if existing_user is None:
+            return False
         # updating the dictionary
         existing_user['todo_list'].update(new_task)
-
         # updating it to the db
         updated_result = (
             users_collection.update_one({"email": user_email}, {"$set": existing_user}))
+        print(updated_result)
         if updated_result.acknowledged:
             return existing_user
         return False
