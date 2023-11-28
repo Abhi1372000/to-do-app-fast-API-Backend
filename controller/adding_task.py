@@ -17,8 +17,8 @@ async def add_task_to_user():
         # updating it to the db
         updated_result = (
             users_collection.update_one({"email": user_email}, {"$set": existing_user}))
-        print(updated_result)
-        if updated_result.acknowledged:
+        # print(updated_result)
+        if updated_result.raw_result["ok"] == 1.0:
             return existing_user
         return False
     except Exception as err:
