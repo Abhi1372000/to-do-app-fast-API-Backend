@@ -13,5 +13,10 @@ responses = {
         "status_code": 500,
         "status": "failed",
         "message": "internal server error",
+    },
+    "422": {
+        "status_code": 422,
+        "status": "success",
+        "message": "",
     }
 }

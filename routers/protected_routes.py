@@ -33,18 +33,22 @@ async def get_task():
     return {"response": content_res}
 
 
-@protected_router.post("/api/update_task")
+@protected_router.put("/api/update_task")
 async def update_task_details():
     change_result = await task_status_change()
 
-    if change_result.raw_result["ok"] == 1.0:
-        result = get_todo_name()
-        if result is False or result is None:
-            content_res = responses["400"]
-            content_res["message"] = "data is not fetched"
-            return content_res
+    if change_result.raw_result["ok"] != 1.0:
+        content_res = responses["422"]
+        content_res["message"] = "data is not updated"
+        return {"response": content_res}
+
+    result = await get_todo_name()
+    if result is False or result is None:
+        content_res = responses["400"]
+        content_res["message"] = "data is not fetched"
+        return content_res
 
     content_res = responses["200"]
-    content_res["message"] = "task updated successfull"
+    content_res["message"] = "task updated successfully"
     content_res["data"] = result
-    return {"response": content_res}
+    return content_res
