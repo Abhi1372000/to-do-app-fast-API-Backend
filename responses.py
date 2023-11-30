@@ -18,5 +18,10 @@ responses = {
         "status_code": 422,
         "status": "success",
         "message": "",
+    },
+    "401": {
+        "status_code": 401,
+        "status": "failed",
+        "message": "",
     }
 }
