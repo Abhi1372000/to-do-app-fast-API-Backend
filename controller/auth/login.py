@@ -1,5 +1,5 @@
 from config.models import users_collection
-from libs.helpers import jwt_creation_fun
+from libs.helpers import jwt_creation_fun, password_check
 
 
 async def login_auth(username, password):
@@ -7,14 +7,15 @@ async def login_auth(username, password):
 
         current_user = users_collection.find_one({"email": username},
                                                  {"_id": 0, "password": 1})
+        check_res = await password_check(password, current_user["password"])
+
+        if check_res is not True:
+            return {"authrized": False, "token": ""}
 
         if current_user is None or not current_user:
             return {"authrized": False, "token": ""}
-
-        if password != current_user["password"]:
-            return {"authrized": False, "token": ""}
-
-        token = await jwt_creation_fun()
+        # await jwt_creation_fun()
+        token = await jwt_creation_fun(username)
         return {"authrized": True, "token": token}
     except Exception as err:
         return err
