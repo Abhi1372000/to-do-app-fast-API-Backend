@@ -1,14 +1,13 @@
 from config.models import users_collection
-from libs.helpers import password_Hash
-from libs.helpers import jwt_creation_fun
+from libs.helpers import jwt_creation_fun, password_Hash
 
 
-async def register_to_db(username, password, name, occupation):
+async def register_to_db(email, password, name, occupation):
     try:
         hashed_password = await password_Hash(password)
 
         user_data = {
-            "email": username,
+            "email": email,
             "password": hashed_password,
             "name": name,
             "occupation": occupation,
@@ -20,7 +19,7 @@ async def register_to_db(username, password, name, occupation):
         if registration.acknowledged is False:
             return {"authrized": False, "token": ""}
 
-        token = await jwt_creation_fun(username)
+        token = await jwt_creation_fun(email)
 
         return {"authrized": True, "token": token}
     except Exception as err:
